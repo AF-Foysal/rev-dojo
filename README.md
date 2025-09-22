@@ -24,11 +24,12 @@
 ### :three: Admin
 
 - [ ] CD-301: As an **Admin**, I can **create and verify Student and Instructor** accounts.
-- [ ] CD-302: As an **Admin**, I can *assign SINGLE roles (STUDENT, INSTRUCTOR)** to any user.
+- [ ] CD-302: As an **Admin**, I can \*assign SINGLE roles (STUDENT, INSTRUCTOR)\*\* to any user.
 - [ ] CD-303: As an **Admin**, I can **manage all classes and students**.
 
 ### :four: System
-- [ ] CD-401: As a **System**, I enforce **RBAC** so each role only sees its permitted pages. 
+
+- [ ] CD-401: As a **System**, I enforce **RBAC** so each role only sees its permitted pages.
 
 ## ERD
 
@@ -42,7 +43,7 @@ user [icon: user, color: blue] {
   last_name string
   email string @unique
   password string
-  verified boolean 
+  verified boolean
   is_active boolean
   created_at timestamp @default(now)
   updated_at timestamp @default(now)
@@ -53,7 +54,7 @@ user [icon: user, color: blue] {
     role_name string
     created_at timestamp @default(now)
     updated_at timestamp @default(now)
-  
+
   }
 
   course [icon: book-open, color: green]{
@@ -72,7 +73,7 @@ user [icon: user, color: blue] {
     status string
     created_at timestamp @default(now)
     updated_at timestamp @default(now)
-  }  
+  }
 
   grade [icon: check-circle, color: purple ]{
     id string pk
@@ -122,7 +123,6 @@ user [icon: user, color: blue] {
 - Lombok
 - Validation
 - MapStruct
-- SpringDoc OpenAPI
 
 ### Frontend
 
