@@ -107,6 +107,27 @@ user [icon: user, color: blue] {
 
   user.id < post.instructor_id
   course.id < post.course_id
-
-
 ```
+
+## Tech Stack
+
+### Backend
+
+- Spring Boot
+- Spring WEB
+- Spring Data JPA
+- Spring Security + JWT
+- Spring Mail
+- PostgreSQL
+- Lombok
+- Validation
+- MapStruct
+- SpringDoc OpenAPI
+
+### Frontend
+
+- React
+
+### CI/CD
+
+- Docker
