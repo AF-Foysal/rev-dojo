@@ -4,8 +4,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import dev.affoysal.backend.Enum.RoleEnum;
-import dev.affoysal.backend.Model.Role;
+import dev.affoysal.backend.Entity.Role;
+import dev.affoysal.backend.Entity.RoleEnum;
 import dev.affoysal.backend.Repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 

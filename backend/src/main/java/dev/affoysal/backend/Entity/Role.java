@@ -1,11 +1,10 @@
-package dev.affoysal.backend.Model;
+package dev.affoysal.backend.Entity;
 
 import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import dev.affoysal.backend.Enum.RoleEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

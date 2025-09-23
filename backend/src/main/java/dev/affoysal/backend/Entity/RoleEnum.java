@@ -1,4 +1,4 @@
-package dev.affoysal.backend.Enum;
+package dev.affoysal.backend.Entity;
 
 public enum RoleEnum {
     STUDENT,
