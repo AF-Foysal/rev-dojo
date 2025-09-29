@@ -64,85 +64,6 @@
 - [ ] RD-901: **Track** any user that creates/updates an entity.
 - [ ] RD-902: **Track** when an entity is created/updated.
 
-## ERD
-
-![ERD](ERD.png)
-
-```
-user [icon: user, color: blue] {
-  id string pk
-  role_id string fk
-  first_name string
-  last_name string
-  email string @unique
-  password string
-  verified boolean
-  is_active boolean
-  created_at timestamp @default(now)
-  updated_at timestamp @default(now)
-  }
-
-  role [icon: key, color: red]{
-    id string pk
-    role_name string
-    created_at timestamp @default(now)
-    updated_at timestamp @default(now)
-
-  }
-
-  course [icon: book-open, color: green]{
-    id string pk
-    course_name string
-    description string
-    instructor_id string fk
-    created_at timestamp @default(now)
-    updated_at timestamp @default(now)
-  }
-
-  enrollment [icon: link, color: orange]{
-    id string pk
-    user_id string fk
-    course_id string fk
-    status string
-    created_at timestamp @default(now)
-    updated_at timestamp @default(now)
-  }
-
-  grade [icon: check-circle, color: purple ]{
-    id string pk
-    user_id string fk
-    course_id string fk
-    score number
-    created_at timestamp @default(now)
-    updated_at timestamp @default(now)
-  }
-
-  post [icon: inbox, color: yellow] {
-  id string pk
-  course_id string fk
-  instructor_id string fk
-  title string
-  content text
-  type string
-  created_at timestamp @default(now)
-  updated_at timestamp @default(now)
-}
-
-
-  role.id < user.role_id
-
-  user.id < course.instructor_id
-
-  user.id < enrollment.user_id
-  course.id < enrollment.course_id
-
-  user.id < grade.user_id
-  course.id < grade.course_id
-
-  user.id < post.instructor_id
-  course.id < post.course_id
-```
-
 ## Tech Stack
 
 ### Backend
@@ -160,6 +81,10 @@ user [icon: user, color: blue] {
 ### Frontend
 
 - React
+
+### Database
+
+- PostgreSQL
 
 ### CI/RD
 

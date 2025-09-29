@@ -22,7 +22,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Value("${spring.mail.verify.host}")
     private String host;
-    @Value("${spring.mail.from}")
+    @Value("${EMAIL_ID}")
     private String fromEmailString;
 
     @Override

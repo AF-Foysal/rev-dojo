@@ -34,6 +34,7 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class RoleEntity extends Auditable {
 
+    @Column(unique = true)
     private String name;
     private Authority authority;
 

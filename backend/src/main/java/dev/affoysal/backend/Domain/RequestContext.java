@@ -1,7 +1,7 @@
 package dev.affoysal.backend.Domain;
 
 public class RequestContext {
-    private static final ThreadLocal<String> USER_ID = new ThreadLocal<>();
+    private static final ThreadLocal<Long> USER_ID = new ThreadLocal<>();
 
     private RequestContext() {
     }
@@ -10,11 +10,11 @@ public class RequestContext {
         USER_ID.remove();
     }
 
-    public static void setUserId(String userId) {
+    public static void setUserId(Long userId) {
         USER_ID.set(userId);
     }
 
-    public static String getUserId() {
+    public static Long getUserId() {
         return USER_ID.get();
     }
 }

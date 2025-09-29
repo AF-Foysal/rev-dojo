@@ -28,13 +28,11 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class UserEntity extends Auditable {
 
-    @Column(updatable = false, unique = true, nullable = false)
-    private String userId;
+    @Column(unique = true, nullable = false)
+    private String email;
     private String firstName;
     private String lastName;
 
-    @Column(unique = true, nullable = false)
-    private String email;
 
     private Integer loginAttempts;
     private Instant lastLoginAttempt;

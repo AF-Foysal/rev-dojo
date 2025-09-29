@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,16 +32,17 @@ import lombok.Setter;
 public abstract class Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(updatable = false)
-    private String id;
+    @SequenceGenerator(name = "primary_key_seq", sequenceName = "primary_key_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "primary_key_seq")
+    @Column(name = "id", updatable = false)
+    private Long id;
     private String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
 
     @NotNull
-    private String createdBy;
+    private Long createdBy;
 
     @NotNull
-    private String updatedBy;
+    private Long updatedBy;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -52,11 +54,13 @@ public abstract class Auditable {
 
     @PrePersist
     public void beforePersist() {
-        String userId = RequestContext.getUserId();
+        // Long userId = RequestContext.getUserId();
 
-        if (userId == null) {
-            throw new ApiException();
-        }
+        Long userId = 0L;
+
+        // if (userId == null) {
+        // throw new ApiException();
+        // }
 
         setCreatedAt(Instant.now());
         setCreatedBy(userId);
@@ -67,11 +71,12 @@ public abstract class Auditable {
 
     @PreUpdate
     public void beforeUpdate() {
-        String userId = RequestContext.getUserId();
+        // Long userId = RequestContext.getUserId();
+        Long userId = 0L;
 
-        if (userId == null) {
-            throw new ApiException();
-        }
+        // if (userId == null) {
+        // throw new ApiException();
+        // }
 
         setUpdatedAt(Instant.now());
         setUpdatedBy(userId);

@@ -19,9 +19,9 @@ public class UserEventListener {
         String fullName = event.getUser().getFirstName() + " " + event.getUser().getLastName();
         switch (event.getType()) {
             case EventType.REGISTRATION -> emailService.sendNewAccountEmail(fullName, event.getUser().getEmail(),
-                    (String) event.getData().get("key"));
+                    (String) event.getData().get("token"));
             case EventType.RESET_PASSWORD -> emailService.sendResetPasswordEmail(fullName, event.getUser().getEmail(),
-                    (String) event.getData().get("key"));
+                    (String) event.getData().get("token"));
             default -> {
             }
         }
