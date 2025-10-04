@@ -4,21 +4,21 @@
 
 ### New Account
 
-- [ ] RD-001: Allow users to **create** new account using email and password.
-- [ ] RD-002: Disable all created accounts until **verified**.
-- [ ] RD-003: Send an email with a link to confirm new user account.
-- [ ] RD-004: Allow login for an account **only** after **verification**.
+- [x] RD-001: Allow users to **create** new account using email and password.
+- [x] RD-002: Disable all created accounts until **verified**.
+- [x] RD-003: Send an email with a link to confirm new user account.
+- [x] RD-004: Allow login for an account **only** after **verification**.
 
 ### Reset Password
 
-- [ ] RD-101: Allow users to **reset** their password.
-- [ ] RD-102: Send a link to users' emails to reset password.
+- [x] RD-101: Allow users to **reset** their password.
+- [x] RD-102: Send a link to users' emails to reset password.
 - [ ] RD-103: Present screen with form to reset password when link is clicked.
-- [ ] RD-104: On password reset success, user should be able to login using new password.
+- [x] RD-104: On password reset success, user should be able to login using new password.
 
 ### Log in
 
-- [ ] RD-201: Allow users to enter email and password to **log in**.
+- [x] RD-201: Allow users to enter email and password to **log in**.
 
 ### Profile
 
@@ -75,7 +75,6 @@
 - PostgreSQL
 - Lombok
 - Validation
-- MapStruct
 
 ### Frontend
 

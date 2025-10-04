@@ -14,4 +14,10 @@ public interface UserService {
     User getUserByEmail(String email);
 
     CredentialEntity getUserCredentialById(Long id);
+
+    void resetPassword(String email);
+
+    User verifyPasswordToken(String token);
+
+    void updatePassword(String email, String newPassword, String confirmNewPassword);
 }

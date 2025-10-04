@@ -21,6 +21,7 @@ import dev.affoysal.backend.Repository.RoleRepository;
 import dev.affoysal.backend.Repository.UserRepository;
 import dev.affoysal.backend.Service.UserService;
 import dev.affoysal.backend.Utility.UserUtils;
+import dev.affoysal.backend.Validation.UserValidation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +79,10 @@ public class UserServiceImpl implements UserService {
         return confirmationRepository.findByToken(token).orElseThrow(() -> new ApiException("Confirmation not found"));
     }
 
+    private ConfirmationEntity getUserConfirmation(UserEntity user) {
+        return confirmationRepository.findByUserEntity(user).orElse(null);
+    }
+
     @Override
     public User getUserByEmail(String email) {
         UserEntity userEntity = getUserEntityByEmail(email);
@@ -89,4 +94,47 @@ public class UserServiceImpl implements UserService {
         var credentialById = credentialRepository.getCredentialByUserEntityId(id);
         return credentialById.orElseThrow(() -> new ApiException("Unable to find credential"));
     }
+
+    @Override
+    public void resetPassword(String email) {
+        var user = getUserEntityByEmail(email);
+        var confirmation = getUserConfirmation(user);
+
+        if (confirmation != null) {
+            publisher.publishEvent(
+                    new UserEvent(user, EventType.RESET_PASSWORD, Map.of("token", confirmation.getToken())));
+        } else {
+            var confirmationEntity = new ConfirmationEntity(user);
+            confirmationRepository.save(confirmationEntity);
+            publisher.publishEvent(
+                    new UserEvent(user, EventType.RESET_PASSWORD, Map.of("token", confirmationEntity.getToken())));
+        }
+    }
+
+    @Override
+    public User verifyPasswordToken(String token) {
+        var confirmationEntity = getUserConfirmation(token);
+        if (confirmationEntity == null) {
+            throw new ApiException("Unable to find token");
+        }
+        var userEntity = getUserEntityByEmail(confirmationEntity.getUserEntity().getEmail());
+        if (userEntity == null) {
+            throw new ApiException("Incorrect token");
+        }
+        UserValidation.verifyAccountStatus(userEntity);
+        confirmationRepository.delete(confirmationEntity);
+        return UserUtils.fromUserEntity(userEntity, userEntity.getRole());
+    }
+
+    @Override
+    public void updatePassword(String email, String newPassword, String confirmNewPassword) {
+        if (!newPassword.equals(confirmNewPassword)) {
+            throw new ApiException("Passwords do not match. Please try again.");
+        }
+        var user = getUserByEmail(email);
+        var credentials = getUserCredentialById(user.getId());
+        credentials.setPassword(encoder.encode(newPassword));
+        credentialRepository.save(credentials);
+    }
+
 }

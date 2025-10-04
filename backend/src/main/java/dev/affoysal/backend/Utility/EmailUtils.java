@@ -20,10 +20,10 @@ public class EmailUtils {
     }
 
     public static String getVerificationUrl(String host, String token) {
-        return host + "/verify/account?token=" + token;
+        return host + "/user/verify/account?token=" + token;
     }
 
     public static String getResetPasswordUrl(String host, String token) {
-        return host + "/verify/reset-password?token=" + token;
+        return host + "/user/verify/reset-password?token=" + token;
     }
 }
