@@ -1,5 +1,7 @@
 package dev.affoysal.backend.Service;
 
+import dev.affoysal.backend.DTO.User;
+import dev.affoysal.backend.Entity.CredentialEntity;
 import dev.affoysal.backend.Entity.RoleEntity;
 
 public interface UserService {
@@ -8,4 +10,8 @@ public interface UserService {
     RoleEntity getRoleName(String name);
 
     void verifyAccountToken(String token);
+
+    User getUserByEmail(String email);
+
+    CredentialEntity getUserCredentialById(Long id);
 }

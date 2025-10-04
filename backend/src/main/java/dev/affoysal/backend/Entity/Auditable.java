@@ -54,13 +54,13 @@ public abstract class Auditable {
 
     @PrePersist
     public void beforePersist() {
-        // Long userId = RequestContext.getUserId();
+        Long userId = RequestContext.getUserId();
 
-        Long userId = 0L;
+        // Long userId = 0L;
 
-        // if (userId == null) {
-        // throw new ApiException();
-        // }
+        if (userId == null) {
+            throw new ApiException();
+        }
 
         setCreatedAt(Instant.now());
         setCreatedBy(userId);
@@ -71,12 +71,12 @@ public abstract class Auditable {
 
     @PreUpdate
     public void beforeUpdate() {
-        // Long userId = RequestContext.getUserId();
-        Long userId = 0L;
+        Long userId = RequestContext.getUserId();
+        // Long userId = 0L;
 
-        // if (userId == null) {
-        // throw new ApiException();
-        // }
+        if (userId == null) {
+            throw new ApiException();
+        }
 
         setUpdatedAt(Instant.now());
         setUpdatedBy(userId);

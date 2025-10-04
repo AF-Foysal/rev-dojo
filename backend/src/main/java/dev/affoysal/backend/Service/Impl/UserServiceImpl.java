@@ -1,11 +1,12 @@
 package dev.affoysal.backend.Service.Impl;
 
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import dev.affoysal.backend.DTO.User;
 import dev.affoysal.backend.Entity.ConfirmationEntity;
 import dev.affoysal.backend.Entity.CredentialEntity;
 import dev.affoysal.backend.Entity.RoleEntity;
@@ -34,13 +35,13 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final CredentialRepository credentialRepository;
     private final ConfirmationRepository confirmationRepository;
-
+    private final BCryptPasswordEncoder encoder;
     private final ApplicationEventPublisher publisher;
 
     @Override
     public void createUser(String firstName, String lastName, String email, String password) {
         var userEntity = userRepository.save(createNewUser(firstName, lastName, email));
-        var credentialEntity = new CredentialEntity(password, userEntity);
+        var credentialEntity = new CredentialEntity(encoder.encode(password), userEntity);
         credentialRepository.save(credentialEntity);
         var confirmationEntity = new ConfirmationEntity(userEntity);
         confirmationRepository.save(confirmationEntity);
@@ -75,5 +76,17 @@ public class UserServiceImpl implements UserService {
 
     private ConfirmationEntity getUserConfirmation(String token) {
         return confirmationRepository.findByToken(token).orElseThrow(() -> new ApiException("Confirmation not found"));
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        UserEntity userEntity = getUserEntityByEmail(email);
+        return UserUtils.fromUserEntity(userEntity, userEntity.getRole());
+    }
+
+    @Override
+    public CredentialEntity getUserCredentialById(Long id) {
+        var credentialById = credentialRepository.getCredentialByUserEntityId(id);
+        return credentialById.orElseThrow(() -> new ApiException("Unable to find credential"));
     }
 }

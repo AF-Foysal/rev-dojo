@@ -19,7 +19,6 @@
 ### Log in
 
 - [ ] RD-201: Allow users to enter email and password to **log in**.
-- [ ] RD-202: User locked for 30 minutes after **3 failed attempts**.
 
 ### Profile
 

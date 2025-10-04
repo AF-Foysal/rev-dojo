@@ -1,7 +1,5 @@
 package dev.affoysal.backend.Entity;
 
-import java.time.Instant;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.Column;
@@ -32,10 +30,6 @@ public class UserEntity extends Auditable {
     private String email;
     private String firstName;
     private String lastName;
-
-
-    private Integer loginAttempts;
-    private Instant lastLoginAttempt;
 
     private boolean verified;
 
