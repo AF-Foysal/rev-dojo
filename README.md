@@ -1,32 +1,90 @@
-# Class Dojo
+# Rev Dojo
 
-## Stories
+## User Account
 
-### Authentication & Account Management
+### New Account
 
-- [ ] CD-001: As a **User**, I can **verify** my email and **create** my password.
-- [ ] CD-002: As a **User**, I can **login** and get a **JWT** token.
-- [ ] CD-003: As a **User**, I can **reset my password**, if I forget it.
-- [ ] CD-004: As a **System**, I can **verify** emails before allowing login.
+- [ ] RD-001: Allow users to **create** new account using email and password.
+- [ ] RD-002: Disable all created accounts until **verified**.
+- [ ] RD-003: Send an email with a link to confirm new user account.
+- [ ] RD-004: Allow login for an account **only** after **verification**.
 
-### Student
+### Reset Password
 
-- [ ] CD-101: As a **Student**, I can **view the classes I'm enrolled in**.
-- [ ] CD-102: As a **Student**, I can **view my grades** in each class.
+- [ ] RD-101: Allow users to **reset** their password.
+- [ ] RD-102: Send a link to users' emails to reset password.
+- [ ] RD-103: Present screen with form to reset password when link is clicked.
+- [ ] RD-104: On password reset success, user should be able to login using new password.
 
-### Instructor
+### Log in
 
-- [ ] CD-201: As an **Instructor**, I can **edit classes info**.
-- [ ] CD-202: As an **Instructor**, I can **view all enrolled Students** in my classes.
-- [ ] CD-203: As an **Instructor**, I can **post announcements and materials** on a class board.
-- [ ] CD-204: As an **Instructor**, I can **record and update grades** for each student in my classes.
+- [ ] RD-201: Allow users to enter email and password to **log in**.
 
-### Admin
+### Profile
 
-- [ ] CD-301: As an **Admin**, I can **create and verify Student and Instructor** accounts.
-- [ ] CD-302: As an **Admin**, I can *assign SINGLE roles (STUDENT, INSTRUCTOR)** to any user.
-- [ ] CD-303: As an **Admin**, I can **manage all classes and students**.
+- [ ] RD-301: Allow users to update basic information while logged in.
+- [ ] RD-302: Allow users to update password while logged in.
 
-### System
-- [ ] CD-401: As a **System**, I enforce **RBAC** so each role only sees its permitted pages. 
+## Homepage
 
+### Course List
+
+- [ ] RD-401: Show list of all classes on the homepage.
+- [ ] RD-402: Show snippet of details for each class.
+- [ ] RD-403: Allow to click on a class to view class page.
+
+### Course Details
+
+- [ ] RD-501: Show all posts, materials, class list, and details when clicked on.
+- [ ] RD-502: Materials should be downloadable.
+
+## Access Control
+
+### Admin Role
+
+- [ ] RD-601: **Assign** roles to verified users. Cannot assign **ADMIN**.
+- [ ] RD-602: **Create** classes and **enroll** Students.
+- [ ] RD-603: **Assign** Instructors to courses.
+
+### Instructor Role
+
+- [ ] RD-701: **Edit** assigned class info.
+- [ ] RD-702: **View** all enrolled Students in classes.
+- [ ] RD-703: **Post** announcements and materials on class board.
+- [ ] RD-704: **Record** and **update** grades for each student in classes.
+
+### Student Role
+
+- [ ] RD-801: **View** enrolled classes.
+- [ ] RD-802: **View** grade for each class.
+
+## Audit Trail
+
+- [ ] RD-901: **Track** any user that creates/updates an entity.
+- [ ] RD-902: **Track** when an entity is created/updated.
+
+## Tech Stack
+
+### Backend
+
+- Spring Boot
+- Spring WEB
+- Spring Data JPA
+- Spring Security + JWT
+- Spring Mail
+- PostgreSQL
+- Lombok
+- Validation
+- MapStruct
+
+### Frontend
+
+- React
+
+### Database
+
+- PostgreSQL
+
+### CI/RD
+
+- Docker
