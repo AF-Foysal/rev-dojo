@@ -209,6 +209,27 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
     }
 
+    @Override
+    public void toggleAccountExpired(String userId) {
+        var userEntity = getUserEntityByUserId(userId);
+        userEntity.setAccountNonExpired(!userEntity.isAccountNonExpired());
+        userRepository.save(userEntity);
+    }
+
+    @Override
+    public void toggleAccountLocked(String userId) {
+        var userEntity = getUserEntityByUserId(userId);
+        userEntity.setAccountNonLocked(!userEntity.isAccountNonLocked());
+        userRepository.save(userEntity);
+    }
+
+    @Override
+    public void toggleAccountEnabled(String userId) {
+        var userEntity = getUserEntityByUserId(userId);
+        userEntity.setEnabled(!userEntity.isEnabled());
+        userRepository.save(userEntity);
+    }
+
     private boolean verifyCode(String qrCode, String qrCodeSecret) {
         TimeProvider timeProvider = new SystemTimeProvider();
         CodeGenerator codeGenerator = new DefaultCodeGenerator();
