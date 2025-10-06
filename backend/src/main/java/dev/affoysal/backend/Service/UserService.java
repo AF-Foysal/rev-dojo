@@ -4,8 +4,6 @@ import dev.affoysal.backend.dto.User;
 import dev.affoysal.backend.entity.CredentialEntity;
 import dev.affoysal.backend.entity.RoleEntity;
 import dev.affoysal.backend.enumeration.LoginType;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 
 public interface UserService {
     void createUser(String firstName, String lastName, String email, String password);
@@ -21,5 +19,6 @@ public interface UserService {
     void resetPassword(String email);
     User verifyPasswordKey(String key);
     void updatePassword(String userId, String newPassword, String confirmNewPassword);
-    User updateUser(String userId, @NotEmpty(message = "First name cannot be empty or null") String firstName, @NotEmpty(message = "Last name cannot be empty or null") String lastName, @NotEmpty(message = "Email cannot be empty or null") @Email(message = "Invalid email address") String email, String phone, String bio);
+    User updateUser(String userId, String firstName, String lastName, String email, String phone, String bio);
+    void updateRole(String userId, String role);
 }

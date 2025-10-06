@@ -2,10 +2,7 @@ package dev.affoysal.backend.resource;
 
 import dev.affoysal.backend.domain.Response;
 import dev.affoysal.backend.dto.User;
-import dev.affoysal.backend.dtorequset.EmailRequest;
-import dev.affoysal.backend.dtorequset.QrCodeRequest;
-import dev.affoysal.backend.dtorequset.ResetPasswordRequest;
-import dev.affoysal.backend.dtorequset.UserRequest;
+import dev.affoysal.backend.dtorequset.*;
 import dev.affoysal.backend.service.JwtService;
 import dev.affoysal.backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,6 +61,13 @@ public class UserResource {
     public ResponseEntity<Response> updateProfile(@AuthenticationPrincipal User userPrincipal, @RequestBody UserRequest userRequest, HttpServletRequest request) {
         var user = userService.updateUser(userPrincipal.getUserId(), userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPhone(), userRequest.getBio());
         return ResponseEntity.ok().body(getResponse(request, of("user", user), "User updated successfully", OK));
+
+    }
+
+    @PatchMapping("/updaterole")
+    public ResponseEntity<Response> updateRole(@AuthenticationPrincipal User userPrincipal, @RequestBody RoleRequest roleRequest, HttpServletRequest request) {
+        userService.updateRole(userPrincipal.getUserId(), roleRequest.getRole());
+        return ResponseEntity.ok().body(getResponse(request, emptyMap(), "Role updated successfully", OK));
 
     }
 
