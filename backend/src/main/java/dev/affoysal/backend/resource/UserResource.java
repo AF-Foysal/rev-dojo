@@ -112,6 +112,17 @@ public class UserResource {
         return ResponseEntity.ok().body(getResponse(request, of("user", user), "QR code verified", OK));
     }
 
+    // START - Update Password when user IS logged in
+
+    @PatchMapping("/updatepassword")
+    public ResponseEntity<Response> updatePassword(@AuthenticationPrincipal User user, @RequestBody UpdatePasswordRequest passwordRequest, HttpServletRequest request) {
+        userService.updatePassword(user.getUserId(), passwordRequest.getPassword(), passwordRequest.getNewPassword(), passwordRequest.getConfirmNewPassword());
+        return ResponseEntity.ok().body(getResponse(request, emptyMap(), "Password updated successfully", OK));
+
+    }
+
+    // END - Update Password when user IS logged in
+
     // START - Reset Password when user is NOT logged in
 
     @PostMapping("/resetpassword")

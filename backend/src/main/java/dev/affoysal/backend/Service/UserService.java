@@ -4,6 +4,7 @@ import dev.affoysal.backend.dto.User;
 import dev.affoysal.backend.entity.CredentialEntity;
 import dev.affoysal.backend.entity.RoleEntity;
 import dev.affoysal.backend.enumeration.LoginType;
+import jakarta.validation.constraints.NotEmpty;
 
 public interface UserService {
     void createUser(String firstName, String lastName, String email, String password);
@@ -19,6 +20,7 @@ public interface UserService {
     void resetPassword(String email);
     User verifyPasswordKey(String key);
     void updatePassword(String userId, String newPassword, String confirmNewPassword);
+    void updatePassword(String userId, String currentPassword, String newPassword, String confirmNewPassword);
     User updateUser(String userId, String firstName, String lastName, String email, String phone, String bio);
     void updateRole(String userId, String role);
     void toggleAccountExpired(String userId);
