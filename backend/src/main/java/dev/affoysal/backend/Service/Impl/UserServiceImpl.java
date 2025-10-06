@@ -28,14 +28,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
+import static dev.affoysal.backend.constant.Constants.PHOTO_DIRECTORY;
 import static dev.affoysal.backend.enumeration.EventType.REGISTRATION;
 import static dev.affoysal.backend.enumeration.EventType.RESETPASSWORD;
 import static dev.affoysal.backend.utils.UserUtils.*;
 import static dev.affoysal.backend.validation.UserValidation.verifyAccountStatus;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Service
@@ -43,6 +52,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final CredentialRepository credentialRepository;
@@ -167,11 +177,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User verifyPasswordKey(String key) {
         var confirmationEntity = getUserConfirmation(key);
-        if (confirmationEntity == null){
+        if (confirmationEntity == null) {
             throw new ApiException("Unable to find token");
         }
         var userEntity = getUserEntityByEmail(confirmationEntity.getUserEntity().getEmail());
-        if (userEntity == null){
+        if (userEntity == null) {
             throw new ApiException("Incorrect key");
         }
         verifyAccountStatus(userEntity);
@@ -181,7 +191,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(String userId, String newPassword, String confirmNewPassword) {
-        if (!newPassword.equals(confirmNewPassword)){
+        if (!newPassword.equals(confirmNewPassword)) {
             throw new ApiException("Passwords do not match. Please try again");
         }
         var user = getUserByUserId(userId);
@@ -192,14 +202,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(String userId, String currentPassword, String newPassword, String confirmNewPassword) {
-        if (!newPassword.equals(confirmNewPassword)){
+        if (!newPassword.equals(confirmNewPassword)) {
             throw new ApiException("Passwords do not match. Please try again");
         }
         var user = getUserEntityByUserId(userId);
         verifyAccountStatus(user);
         var credentials = getUserCredentialById(user.getId());
         if (!encoder.matches(currentPassword, credentials.getPassword())) {
-            throw new ApiException("Current password is incorrect. Please try again");}
+            throw new ApiException("Current password is incorrect. Please try again");
+        }
         credentials.setPassword(encoder.encode(newPassword));
         credentialRepository.save(credentials);
     }
@@ -244,11 +255,44 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
     }
 
+    @Override
+    public List<User> getUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userEntity -> fromUserEntity(userEntity, userEntity.getRole(), getUserCredentialById(userEntity.getId())))
+                .collect(toList());
+    }
+
+    @Override
+    public String uploadPhoto(String userId, MultipartFile file) {
+        var userEntity = getUserEntityByUserId(userId);
+        var photoUrl = photoFunction.apply(userId, file);
+        userEntity.setImageUrl(photoUrl + "?timestamp=" + System.currentTimeMillis());
+        userRepository.save(userEntity);
+        return photoUrl;
+    }
+
+    private final BiFunction<String, MultipartFile, String> photoFunction = (id, file) -> {
+        var filename = id + ".png";
+        try {
+            var fileStorageLocation = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();
+            if (!Files.exists(fileStorageLocation)) {
+                Files.createDirectories(fileStorageLocation);
+            }
+            Files.copy(file.getInputStream(), fileStorageLocation.resolve(filename), REPLACE_EXISTING);
+            return ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/user/image/" + filename).toUriString();
+        } catch (Exception e) {
+            throw new ApiException("Unable to save image");
+        }
+    };
+
     private boolean verifyCode(String qrCode, String qrCodeSecret) {
         TimeProvider timeProvider = new SystemTimeProvider();
         CodeGenerator codeGenerator = new DefaultCodeGenerator();
         CodeVerifier codeVerifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
-        if(codeVerifier.isValidCode(qrCodeSecret, qrCode)) {
+        if (codeVerifier.isValidCode(qrCodeSecret, qrCode)) {
             return true;
         } else {
             throw new ApiException("Invalid QR code. Please try again.");

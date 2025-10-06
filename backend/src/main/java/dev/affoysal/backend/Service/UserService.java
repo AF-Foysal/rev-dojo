@@ -4,7 +4,9 @@ import dev.affoysal.backend.dto.User;
 import dev.affoysal.backend.entity.CredentialEntity;
 import dev.affoysal.backend.entity.RoleEntity;
 import dev.affoysal.backend.enumeration.LoginType;
-import jakarta.validation.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface UserService {
     void createUser(String firstName, String lastName, String email, String password);
@@ -26,4 +28,7 @@ public interface UserService {
     void toggleAccountExpired(String userId);
     void toggleAccountLocked(String userId);
     void toggleAccountEnabled(String userId);
+    List<User> getUsers();
+    String uploadPhoto(String userId, MultipartFile file);
+
 }

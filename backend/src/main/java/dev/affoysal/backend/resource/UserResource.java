@@ -12,17 +12,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
+import static dev.affoysal.backend.constant.Constants.PHOTO_DIRECTORY;
 import static dev.affoysal.backend.enumeration.TokenType.ACCESS;
 import static dev.affoysal.backend.enumeration.TokenType.REFRESH;
 import static dev.affoysal.backend.utils.RequestUtils.getResponse;
@@ -30,6 +29,8 @@ import static java.util.Collections.emptyMap;
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 @RestController
 @RequiredArgsConstructor
@@ -153,6 +154,22 @@ public class UserResource {
     }
 
     // END - Reset Password when user is NOT logged in
+
+    @GetMapping("/list")
+    public ResponseEntity<Response> getUsers(@AuthenticationPrincipal User user, HttpServletRequest request){
+        return ResponseEntity.ok().body(getResponse(request, of("users", userService.getUsers()), "Users Retrieved", OK));
+    }
+
+    @PatchMapping("/photo")
+    public ResponseEntity<Response> uploadPhoto(@AuthenticationPrincipal User user, @RequestParam("file") MultipartFile file, HttpServletRequest request){
+        var imageUrl = userService.uploadPhoto(user.getUserId(), file);
+        return ResponseEntity.ok().body(getResponse(request, of("imageUrl", imageUrl), "Photo uploaded successfully", OK));
+    }
+
+    @GetMapping(value = "/image/{file_name}", produces = {IMAGE_PNG_VALUE, IMAGE_JPEG_VALUE})
+    public byte[] getPhoto(@PathVariable("file_name") String fileName) throws IOException {
+        return Files.readAllBytes(Paths.get(PHOTO_DIRECTORY + fileName));
+    }
 
     private URI getUri() {
         return URI.create("");
