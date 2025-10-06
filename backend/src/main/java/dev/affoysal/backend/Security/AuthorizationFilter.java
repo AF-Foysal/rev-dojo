@@ -1,52 +1,50 @@
-package dev.affoysal.backend.Security;
+package dev.affoysal.backend.security;
 
-import java.io.IOException;
-import java.util.Arrays;
-
-import org.springframework.http.HttpMethod;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import dev.affoysal.backend.Constant.Constants;
-import dev.affoysal.backend.Domain.ApiAuthentication;
-import dev.affoysal.backend.Domain.RequestContext;
-import dev.affoysal.backend.Domain.Token;
-import dev.affoysal.backend.Domain.TokenData;
-import dev.affoysal.backend.Enumeration.TokenType;
-import dev.affoysal.backend.Service.JwtService;
-import dev.affoysal.backend.Utility.RequestUtils;
+import dev.affoysal.backend.domain.RequestContext;
+import dev.affoysal.backend.domain.Token;
+import dev.affoysal.backend.domain.TokenData;
+import dev.affoysal.backend.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+import static dev.affoysal.backend.constant.Constants.PUBLIC_ROUTES;
+import static dev.affoysal.backend.domain.ApiAuthentication.authenticated;
+import static dev.affoysal.backend.enumeration.TokenType.ACCESS;
+import static dev.affoysal.backend.enumeration.TokenType.REFRESH;
+import static dev.affoysal.backend.utils.RequestUtils.handleErrorResponse;
+import static java.util.Arrays.asList;
+import static org.springframework.http.HttpMethod.OPTIONS;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class AuthorizationFilter extends OncePerRequestFilter {
-
     private final JwtService jwtService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            var accessToken = jwtService.extractToken(request, TokenType.ACCESS.getValue());
+            var accessToken = jwtService.extractToken(request, ACCESS.getValue());
             if (accessToken.isPresent() && jwtService.getTokenData(accessToken.get(), TokenData::isValid)) {
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(accessToken.get(), request));
                 RequestContext.setUserId(jwtService.getTokenData(accessToken.get(), TokenData::getUser).getId());
             } else {
-                var refreshToken = jwtService.extractToken(request, TokenType.REFRESH.getValue());
-                if (refreshToken.isPresent() && jwtService.getTokenData(refreshToken.get(), TokenData::isValid)) {
+                var refreshToken = jwtService.extractToken(request, REFRESH.getValue());
+                if(refreshToken.isPresent() && jwtService.getTokenData(refreshToken.get(), TokenData::isValid)) {
                     var user = jwtService.getTokenData(refreshToken.get(), TokenData::getUser);
-                    SecurityContextHolder.getContext().setAuthentication(
-                            getAuthentication(jwtService.createToken(user, Token::getAccess), request));
-                    jwtService.addCookie(response, user, TokenType.ACCESS);
+                    SecurityContextHolder.getContext().setAuthentication(getAuthentication(jwtService.createToken(user, Token::getAccess), request));
+                    jwtService.addCookie(response, user, ACCESS);
                     RequestContext.setUserId(user.getId());
                 } else {
                     SecurityContextHolder.clearContext();
@@ -55,25 +53,21 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
             log.error(exception.getMessage());
-            RequestUtils.handleErrorResponse(request, response, exception);
+            handleErrorResponse(request, response, exception);
         }
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        var shouldNotFilter = request.getMethod().equalsIgnoreCase(HttpMethod.OPTIONS.name())
-                || Arrays.asList(Constants.PUBLIC_ROUTES).contains(request.getRequestURI());
-        if (shouldNotFilter) {
-            RequestContext.setUserId(0L);
-        }
+        //var shouldNotFilter = request.getMethod().equalsIgnoreCase(OPTIONS.name()) || asList(PUBLIC_ROUTES).contains(request.getRequestURI());
+        var shouldNotFilter = request.getMethod().equalsIgnoreCase(OPTIONS.name()) || asList(PUBLIC_ROUTES).contains(request.getRequestURI());
+        if(shouldNotFilter) { RequestContext.setUserId(0L); }
         return shouldNotFilter;
     }
 
     private Authentication getAuthentication(String token, HttpServletRequest request) {
-        var authentication = ApiAuthentication.authenticated(jwtService.getTokenData(token, TokenData::getUser),
-                jwtService.getTokenData(token, TokenData::getAuthorities));
+        var authentication = authenticated(jwtService.getTokenData(token, TokenData::getUser), jwtService.getTokenData(token, TokenData::getAuthorities));
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return authentication;
     }
-
 }

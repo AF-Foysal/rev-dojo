@@ -1,11 +1,10 @@
-package dev.affoysal.backend.Repository;
+package dev.affoysal.backend.repository;
 
-import java.util.Optional;
-
+import dev.affoysal.backend.entity.CredentialEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import dev.affoysal.backend.Entity.CredentialEntity;
+import java.util.Optional;
 
 @Repository
 public interface CredentialRepository extends JpaRepository<CredentialEntity, Long> {

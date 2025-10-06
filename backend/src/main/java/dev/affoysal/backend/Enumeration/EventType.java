@@ -1,6 +1,5 @@
-package dev.affoysal.backend.Enumeration;
+package dev.affoysal.backend.enumeration;
 
 public enum EventType {
-    REGISTRATION,
-    RESET_PASSWORD
+    REGISTRATION, RESETPASSWORD
 }

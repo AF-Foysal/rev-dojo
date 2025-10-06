@@ -1,16 +1,14 @@
-package dev.affoysal.backend.Domain;
+package dev.affoysal.backend.domain;
 
-import java.util.Collection;
-
+import dev.affoysal.backend.dto.User;
+import dev.affoysal.backend.exception.ApiException;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-import dev.affoysal.backend.DTO.User;
-import dev.affoysal.backend.Exception.ApiException;
+import java.util.Collection;
 
 public class ApiAuthentication extends AbstractAuthenticationToken {
-
     private static final String PASSWORD_PROTECTED = "[PASSWORD PROTECTED]";
     private static final String EMAIL_PROTECTED = "[EMAIL PROTECTED]";
     private User user;
@@ -30,7 +28,7 @@ public class ApiAuthentication extends AbstractAuthenticationToken {
         this.user = user;
         this.password = PASSWORD_PROTECTED;
         this.email = EMAIL_PROTECTED;
-        this.authenticated = false;
+        this.authenticated = true;
     }
 
     public static ApiAuthentication unauthenticated(String email, String password) {

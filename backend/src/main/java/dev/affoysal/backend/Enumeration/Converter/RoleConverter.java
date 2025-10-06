@@ -1,17 +1,17 @@
-package dev.affoysal.backend.Enumeration.Converter;
+package dev.affoysal.backend.enumeration.converter;
 
-import java.util.stream.Stream;
-
-import dev.affoysal.backend.Enumeration.Authority;
+import dev.affoysal.backend.enumeration.Authority;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+
+import java.util.stream.Stream;
 
 @Converter(autoApply = true)
 public class RoleConverter implements AttributeConverter<Authority, String> {
 
     @Override
     public String convertToDatabaseColumn(Authority authority) {
-        if (authority == null) {
+        if(authority == null){
             return null;
         }
         return authority.getValue();
@@ -19,7 +19,7 @@ public class RoleConverter implements AttributeConverter<Authority, String> {
 
     @Override
     public Authority convertToEntityAttribute(String code) {
-        if (code == null) {
+        if(code == null) {
             return null;
         }
         return Stream.of(Authority.values())
@@ -27,5 +27,4 @@ public class RoleConverter implements AttributeConverter<Authority, String> {
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
-
 }

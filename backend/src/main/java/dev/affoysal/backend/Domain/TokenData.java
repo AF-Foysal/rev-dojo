@@ -1,13 +1,13 @@
-package dev.affoysal.backend.Domain;
+package dev.affoysal.backend.domain;
 
-import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import dev.affoysal.backend.DTO.User;
+import dev.affoysal.backend.dto.User;
 import io.jsonwebtoken.Claims;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.List;
 
 @Builder
 @Getter

@@ -1,4 +1,4 @@
-package dev.affoysal.backend.Domain;
+package dev.affoysal.backend.domain;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,18 +1,18 @@
-package dev.affoysal.backend.Domain;
+package dev.affoysal.backend.domain;
 
-import java.util.Collection;
-
+import dev.affoysal.backend.dto.User;
+import dev.affoysal.backend.entity.CredentialEntity;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import dev.affoysal.backend.DTO.User;
-import dev.affoysal.backend.Entity.CredentialEntity;
-import lombok.RequiredArgsConstructor;
+import java.util.Collection;
 
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
-
+    @Getter
     private final User user;
     private final CredentialEntity credentialEntity;
 
@@ -32,8 +32,22 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {
-        return user.isVerified();
+    public boolean isAccountNonExpired() {
+        return user.isAccountNonExpired();
     }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return user.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return user.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return user.isEnabled();
+    }
 }

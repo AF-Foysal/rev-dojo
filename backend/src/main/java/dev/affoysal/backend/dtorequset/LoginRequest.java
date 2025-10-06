@@ -1,7 +1,6 @@
-package dev.affoysal.backend.DTORequest;
+package dev.affoysal.backend.dtorequset;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -11,11 +10,9 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginRequest {
-
-    @NotEmpty(message = "Email cannot be empty or null.")
-    @Email(message = "Invalid email address.")
+    @NotEmpty(message = "Email cannot be empty or null")
+    @Email(message = "Invalid email address")
     private String email;
-
-    @NotEmpty(message = "Password cannot be empty or null.")
+    @NotEmpty(message = "Password cannot be empty or null")
     private String password;
 }
