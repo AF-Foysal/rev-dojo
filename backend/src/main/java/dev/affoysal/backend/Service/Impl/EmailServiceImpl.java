@@ -1,59 +1,59 @@
-package dev.affoysal.backend.Service.Impl;
+package dev.affoysal.backend.service.impl;
 
+import dev.affoysal.backend.exception.ApiException;
+import dev.affoysal.backend.service.EmailService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import dev.affoysal.backend.Exception.ApiException;
-import dev.affoysal.backend.Service.EmailService;
-import dev.affoysal.backend.Utility.EmailUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static dev.affoysal.backend.utils.EmailUtils.getEmailMessage;
+import static dev.affoysal.backend.utils.EmailUtils.getResetPasswordMessage;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EmailServiceImpl implements EmailService {
-    private static final String NEW_ACCOUNT_VERIFICATION = "New Account Verification";
-    private static final String RESET_PASSWORD_REQUEST = "Reset Password Request";
-    private final JavaMailSender mailSender;
-
+    private static final String NEW_USER_ACCOUNT_VERIFICATION = "New User Account Verification";
+    private static final String PASSWORD_RESET_REQUEST = "Reset Password Request";
+    private final JavaMailSender sender;
     @Value("${spring.mail.verify.host}")
     private String host;
-    @Value("${EMAIL_ID}")
-    private String fromEmailString;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     @Override
     @Async
-    public void sendNewAccountEmail(String name, String email, String token) {
+    public void sendNewAccountEmail(String name, String email, String key) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setSubject(NEW_ACCOUNT_VERIFICATION);
-            message.setFrom(fromEmailString);
+            var message = new SimpleMailMessage();
+            message.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
+            message.setFrom(fromEmail);
             message.setTo(email);
-            message.setText(EmailUtils.getEmailMessage(name, host, token));
-            mailSender.send(message);
-        } catch (Exception e) {
-            log.error("Error sending email: {}", e.getMessage());
-            throw new ApiException("Failed to send email");
+            message.setText(getEmailMessage(name, host, key));
+            sender.send(message);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("Unable to send email");
         }
     }
 
     @Override
     @Async
-    public void sendResetPasswordEmail(String name, String email, String token) {
+    public void sendPasswordResetEmail(String name, String email, String key) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setSubject(RESET_PASSWORD_REQUEST);
-            message.setFrom(fromEmailString);
+            var message = new SimpleMailMessage();
+            message.setSubject(PASSWORD_RESET_REQUEST);
+            message.setFrom(fromEmail);
             message.setTo(email);
-            message.setText(EmailUtils.getResetPasswordMessage(name, host, token));
-            mailSender.send(message);
-        } catch (Exception e) {
-            log.error("Error sending email: {}", e.getMessage());
-            throw new ApiException("Failed to send email");
+            message.setText(getResetPasswordMessage(name, host, key));
+            sender.send(message);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("Unable to send email");
         }
     }
 }

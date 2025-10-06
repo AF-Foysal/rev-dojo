@@ -1,9 +1,8 @@
-package dev.affoysal.backend.Security;
-
-import org.springframework.beans.factory.annotation.Value;
+package dev.affoysal.backend.security;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @Setter

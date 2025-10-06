@@ -1,16 +1,11 @@
-package dev.affoysal.backend.Enumeration;
+package dev.affoysal.backend.enumeration;
 
 public enum TokenType {
-    ACCESS("access-token"),
-    REFRESH("refresh-token");
+    ACCESS("access-token"), REFRESH("refresh-token");
 
     private final String value;
 
-    TokenType(String value) {
-        this.value = value;
-    }
+    TokenType(String value) { this.value = value; }
 
-    public String getValue() {
-        return this.value;
-    }
+    public String getValue() { return this.value; }
 }

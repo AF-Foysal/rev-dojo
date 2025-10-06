@@ -1,29 +1,37 @@
-# Rev Dojo
+# Rev Drive
 
 ## User Account
 
-### New Account
+**New Account**
+- [x] RD-001: The application should allow users to create a new account using basic information, email(all emails are unique), and password. 
+- [x] RD-002: The application should disabled all newly created accounts until verified.
+- [x] RD-003: The application should send an email with a link to confirm new user account.
+- [x] RD-004: Only after verifying a new account should a user be able to log into the application.
 
-- [ ] RD-001: Allow users to **create** new account using email and password.
-- [ ] RD-002: Disable all created accounts until **verified**.
-- [ ] RD-003: Send an email with a link to confirm new user account.
-- [ ] RD-004: Allow login for an account **only** after **verification**.
+**Log In**
+- [x] RD-101: The application should allow users to enter an email and password to log in.
+- [x] RD-102: If MFA is set up, the application should ask for a QR code after entering correct email and password.
+- [x] RD-103: After 6 failed login attempts, user account should be locked for 15 minutes (mitigate brute force attack).
+- [x] RD-104: After 90 days, user password should expire therefore can't log in until password is updated (password rotation).
 
-### Reset Password
+**Reset Password**
+- [x] RD-201: The application should allow users to reset their password.
+- [x] RD-202: The application should send a link to users' email to reset their password (link to be invalid after being clicked on).
+- [x] RD-203: The application should present a screen with a form to reset password when the link is clicked.
+- [x] RD-204: If a password is reset successfully, user should be able to log in using the new password.
+- [x] RD-205: The application should allow users to reset their password as many times as they need.
 
-- [ ] RD-101: Allow users to **reset** their password.
-- [ ] RD-102: Send a link to users' emails to reset password.
-- [ ] RD-103: Present screen with form to reset password when link is clicked.
-- [ ] RD-104: On password reset success, user should be able to login using new password.
+**MFA (Multi-Factor Authentication)**
+- [x] RD-301: The application should allow users to set up Multi-Factor Authentication to help secure their account.
+- [x] RD-302: Multi-Factor Authentication should use a QR code on users' mobile phone.
+- [x] RD-303: The application should allow users to scan a QR code using an authenticator application on their phone to set up Multi-Factor Authentication.
+- [x] RD-304: The application should ask users to enter the QR code from their mobile phone authenticator application in order to log in successfully.
 
-### Log in
-
-- [ ] RD-201: Allow users to enter email and password to **log in**.
-
-### Profile
-
-- [ ] RD-301: Allow users to update basic information while logged in.
-- [ ] RD-302: Allow users to update password while logged in.
+**Profile**
+- [x] RD-401: The application should allow users to update their basic information while logged in.
+- [x] RD-402: The application should allow users to update their password while logged in.
+- [x] RD-403: The application should allow users to update their account settings while logged in.
+- [x] RD-404: The application should allow users to update their profile picture while logged in.
 
 ## Homepage
 
@@ -75,7 +83,6 @@
 - PostgreSQL
 - Lombok
 - Validation
-- MapStruct
 
 ### Frontend
 

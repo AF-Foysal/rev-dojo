@@ -1,76 +1,83 @@
-package dev.affoysal.backend.Security;
+package dev.affoysal.backend.security;
 
-import java.io.IOException;
-import java.util.Map;
-
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.affoysal.backend.domain.Response;
+import dev.affoysal.backend.dto.User;
+import dev.affoysal.backend.dtorequset.LoginRequest;
+import dev.affoysal.backend.service.JwtService;
+import dev.affoysal.backend.service.UserService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 
-import dev.affoysal.backend.Constant.Constants;
-import dev.affoysal.backend.DTO.User;
-import dev.affoysal.backend.DTORequest.LoginRequest;
-import dev.affoysal.backend.Domain.ApiAuthentication;
-import dev.affoysal.backend.Domain.Response;
-import dev.affoysal.backend.Enumeration.TokenType;
-import dev.affoysal.backend.Service.JwtService;
-import dev.affoysal.backend.Utility.RequestUtils;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import static com.fasterxml.jackson.core.JsonParser.Feature.AUTO_CLOSE_SOURCE;
+import static dev.affoysal.backend.constant.Constants.LOGIN_PATH;
+import static dev.affoysal.backend.domain.ApiAuthentication.unauthenticated;
+import static dev.affoysal.backend.enumeration.LoginType.LOGIN_ATTEMPT;
+import static dev.affoysal.backend.enumeration.LoginType.LOGIN_SUCCESS;
+import static dev.affoysal.backend.enumeration.TokenType.ACCESS;
+import static dev.affoysal.backend.enumeration.TokenType.REFRESH;
+import static dev.affoysal.backend.utils.RequestUtils.getResponse;
+import static dev.affoysal.backend.utils.RequestUtils.handleErrorResponse;
+import static java.util.Map.of;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class ApiAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-
+    private final UserService userService;
     private final JwtService jwtService;
 
-    public ApiAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
-        super(new AntPathRequestMatcher(Constants.LOGIN_PATH, HttpMethod.POST.name()), authenticationManager);
+    public ApiAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, JwtService jwtService) {
+        super(new AntPathRequestMatcher(LOGIN_PATH, POST.name()), authenticationManager);
+        this.userService = userService;
         this.jwtService = jwtService;
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         try {
-            var user = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, true).readValue(request.getInputStream(),
-                    LoginRequest.class);
-            var authentication = ApiAuthentication.unauthenticated(user.getEmail(), user.getPassword());
+            var user = new ObjectMapper().configure(AUTO_CLOSE_SOURCE, true).readValue(request.getInputStream(), LoginRequest.class);
+            userService.updateLoginAttempt(user.getEmail(), LOGIN_ATTEMPT);
+            var authentication = unauthenticated(user.getEmail(), user.getPassword());
             return getAuthenticationManager().authenticate(authentication);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            RequestUtils.handleErrorResponse(request, response, e);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            handleErrorResponse(request, response, exception);
             return null;
         }
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-            Authentication authentication) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         var user = (User) authentication.getPrincipal();
-        var httpResponse = sendResponse(request, response, user);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.OK.value());
-        var output = response.getOutputStream();
+        userService.updateLoginAttempt(user.getEmail(), LOGIN_SUCCESS);
+        var httpResponse = user.isMfa() ? sendQrCode(request, user) : sendResponse(request, response, user);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        response.setStatus(OK.value());
+        var out = response.getOutputStream();
         var mapper = new ObjectMapper();
-        mapper.writeValue(output, httpResponse);
-        output.flush();
+        mapper.writeValue(out, httpResponse);
+        out.flush();
     }
 
     private Response sendResponse(HttpServletRequest request, HttpServletResponse response, User user) {
-        jwtService.addCookie(response, user, TokenType.ACCESS);
-        jwtService.addCookie(response, user, TokenType.REFRESH);
-        return RequestUtils.getResponse(request, Map.of("user", user), "Login Success", HttpStatus.OK);
+        jwtService.addCookie(response, user, ACCESS);
+        jwtService.addCookie(response, user, REFRESH);
+        return getResponse(request, of("user", user), "Login Success", OK);
     }
 
+    private Response sendQrCode(HttpServletRequest request, User user) {
+        return getResponse(request, of("user", user), "Please enter QR code", OK);
+    }
 }

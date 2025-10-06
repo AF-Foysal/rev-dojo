@@ -1,23 +1,19 @@
-package dev.affoysal.backend.Service;
+package dev.affoysal.backend.service;
+
+import dev.affoysal.backend.domain.Token;
+import dev.affoysal.backend.domain.TokenData;
+import dev.affoysal.backend.dto.User;
+import dev.affoysal.backend.enumeration.TokenType;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-import dev.affoysal.backend.DTO.User;
-import dev.affoysal.backend.Domain.Token;
-import dev.affoysal.backend.Domain.TokenData;
-import dev.affoysal.backend.Enumeration.TokenType;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 public interface JwtService {
     String createToken(User user, Function<Token, String> tokenFunction);
-
-    Optional<String> extractToken(HttpServletRequest request, String cookieName);
-
+    Optional<String> extractToken(HttpServletRequest request, String tokenType);
     void addCookie(HttpServletResponse response, User user, TokenType type);
-
     <T> T getTokenData(String token, Function<TokenData, T> tokenFunction);
-
     void removeCookie(HttpServletRequest request, HttpServletResponse response, String cookieName);
 }

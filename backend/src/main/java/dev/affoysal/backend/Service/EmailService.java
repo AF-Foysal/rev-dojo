@@ -1,7 +1,6 @@
-package dev.affoysal.backend.Service;
+package dev.affoysal.backend.service;
 
 public interface EmailService {
-    void sendNewAccountEmail(String name, String email, String token);
-
-    void sendResetPasswordEmail(String name, String email, String token);
+    void sendNewAccountEmail(String name, String email, String key);
+    void sendPasswordResetEmail(String name, String email, String key);
 }

@@ -1,20 +1,18 @@
-package dev.affoysal.backend.Event;
+package dev.affoysal.backend.event;
 
-import java.util.Map;
-
-import dev.affoysal.backend.Entity.UserEntity;
-import dev.affoysal.backend.Enumeration.EventType;
+import dev.affoysal.backend.entity.UserEntity;
+import dev.affoysal.backend.enumeration.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Map;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class UserEvent {
-
     private UserEntity user;
     private EventType type;
     private Map<?, ?> data;
-
 }

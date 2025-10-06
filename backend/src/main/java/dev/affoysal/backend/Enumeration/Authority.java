@@ -1,11 +1,12 @@
-package dev.affoysal.backend.Enumeration;
+package dev.affoysal.backend.enumeration;
 
-import dev.affoysal.backend.Constant.Constants;
+import static dev.affoysal.backend.constant.Constants.*;
 
 public enum Authority {
-    STUDENT(Constants.STUDENT_AUTHORITIES),
-    INSTRUCTOR(Constants.INSTRUCTOR_AUTHORITIES),
-    ADMIN(Constants.ADMIN_AUTHORITIES);
+    USER(USER_AUTHORITIES),
+    ADMIN(ADMIN_AUTHORITIES),
+    SUPER_ADMIN(SUPER_ADMIN_AUTHORITIES),
+    MANAGER(MANAGER_AUTHORITIES);
 
     private final String value;
 
@@ -14,7 +15,6 @@ public enum Authority {
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
-
 }
