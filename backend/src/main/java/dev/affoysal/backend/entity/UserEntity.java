@@ -50,11 +50,9 @@ public class UserEntity extends Auditable {
     @Column(columnDefinition = "text")
     private String qrCodeImageUri;
     @ManyToOne(fetch = EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-                    inverseJoinColumns =  @JoinColumn(
-                            name = "role_id", referencedColumnName = "id"))
+    @JoinColumn(
+            name = "role_id",
+            referencedColumnName = "id"
+    )
     private RoleEntity role;
 }

@@ -33,43 +33,41 @@
 - [x] RD-403: The application should allow users to update their account settings while logged in.
 - [x] RD-404: The application should allow users to update their profile picture while logged in.
 
-## Homepage
+## Document Management
 
-### Course List
+**Document List**
+- [x] RD-501: The application should show a list of all the documents uploaded in the homepage.
+- [x] RD-502: The application should show some details (name, size, owner, type, etc) about each document in the list.
+- [x] RD-503: The application should allow logged in users to upload new documents.
+- [x] RD-504: The application should have pagination for the document list.
+- [x] RD-505: The application should allow to set how many documents to display per page.
+- [x] RD-506: The application should allow to search documents by name (result should also include pagination).
+- [x] RD-507: The application should allow to click on a document to see more details.
 
-- [ ] RD-401: Show list of all classes on the homepage.
-- [ ] RD-402: Show snippet of details for each class.
-- [ ] RD-403: Allow to click on a class to view class page.
-
-### Course Details
-
-- [ ] RD-501: Show all posts, materials, class list, and details when clicked on.
-- [ ] RD-502: Materials should be downloadable.
+**Document Details**
+- [ ] RD-601: The application should show details of a document when clicked on.
+- [x] RD-602: The document details should include document owner.
+- [x] RD-603: The application should allow to update the name and description of a document (in detail page).
+- [ ] RD-604: The application should allow to download a document (in detail page).
+- [ ] RD-605 (Optional) : The application should allow to delete the document (in detail page).
 
 ## Access Control
-
-### Admin Role
-
-- [ ] RD-601: **Assign** roles to verified users. Cannot assign **ADMIN**.
-- [ ] RD-602: **Create** classes and **enroll** Students.
-- [ ] RD-603: **Assign** Instructors to courses.
-
-### Instructor Role
-
-- [ ] RD-701: **Edit** assigned class info.
-- [ ] RD-702: **View** all enrolled Students in classes.
-- [ ] RD-703: **Post** announcements and materials on class board.
-- [ ] RD-704: **Record** and **update** grades for each student in classes.
-
-### Student Role
-
-- [ ] RD-801: **View** enrolled classes.
-- [ ] RD-802: **View** grade for each class.
+**User Role**
+- [ ] RD-701: The application should give roles to users.
+- [ ] RD-702: The application roles should contain specific permissions (authorities).
+- [ ] RD-703: The application roles should grant different access levels.
+- [ ] RD-704: The application should allow only users with proper roles to be able to perform certain actions.
+- [ ] RD-705: The application should only allow non-user role users to update account settings.
+- [ ] RD-706: The application should only allow non-user role users to update account roles.
+- [ ] RD-707: The application should only allow users with "delete" document permission to delete documents.
+- [ ] RD-708: The application should only allow non-user role users to view other users in the system.
 
 ## Audit Trail
+- [x] RD-801: The application should keep track of who created an entity (user, document, etc).
+- [x] RD-802: The application should keep track of when an entity (user, document, etc) was created.
+- [x] RD-803: The application should keep track of who updated an entity (user, document, etc).
+- [x] RD-804: The application should keep track of when an entity (user, document, etc) was updated.
 
-- [ ] RD-901: **Track** any user that creates/updates an entity.
-- [ ] RD-902: **Track** when an entity is created/updated.
 
 ## Tech Stack
 
@@ -92,6 +90,6 @@
 
 - PostgreSQL
 
-### CI/RD
+### CI/CD
 
 - Docker

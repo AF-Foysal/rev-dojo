@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static dev.affoysal.backend.constant.Constants.PHOTO_DIRECTORY;
+import static dev.affoysal.backend.constant.Constants.FILE_STORAGE;
 import static dev.affoysal.backend.enumeration.EventType.REGISTRATION;
 import static dev.affoysal.backend.enumeration.EventType.RESETPASSWORD;
 import static dev.affoysal.backend.utils.UserUtils.*;
@@ -272,10 +272,16 @@ public class UserServiceImpl implements UserService {
         return photoUrl;
     }
 
+    @Override
+    public User getUserById(Long id) {
+        var userEntity = getUserEntityById(id);
+        return fromUserEntity(userEntity, userEntity.getRole(), getUserCredentialById(id));
+    }
+
     private final BiFunction<String, MultipartFile, String> photoFunction = (id, file) -> {
         var filename = id + ".png";
         try {
-            var fileStorageLocation = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();
+            var fileStorageLocation = Paths.get(FILE_STORAGE).toAbsolutePath().normalize();
             if (!Files.exists(fileStorageLocation)) {
                 Files.createDirectories(fileStorageLocation);
             }
