@@ -30,5 +30,6 @@ public interface UserService {
     void toggleAccountEnabled(String userId);
     List<User> getUsers();
     String uploadPhoto(String userId, MultipartFile file);
+    User getUserById(Long id);
 
 }

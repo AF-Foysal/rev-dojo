@@ -23,19 +23,19 @@ public class Application {
     @Bean
     CommandLineRunner commandLineRunner(RoleRepository roleRepository) {
         return args -> {
-            RequestContext.setUserId(0L);
-            Authority[] authorities = Authority.values();
-
-            for (Authority authority : authorities) {
-                if (roleRepository.findByNameIgnoreCase(authority.name()).isEmpty()) {
-                    RoleEntity role = new RoleEntity();
-                    role.setName(authority.name());
-                    role.setAuthorities(authority);
-                    roleRepository.save(role);
-                }
-            }
-
-            RequestContext.start();
+//            RequestContext.setUserId(0L);
+//            Authority[] authorities = Authority.values();
+//
+//            for (Authority authority : authorities) {
+//                if (roleRepository.findByNameIgnoreCase(authority.name()).isEmpty()) {
+//                    RoleEntity role = new RoleEntity();
+//                    role.setName(authority.name());
+//                    role.setAuthorities(authority);
+//                    roleRepository.save(role);
+//                }
+//            }
+//
+//            RequestContext.start();
         };
     }
 }

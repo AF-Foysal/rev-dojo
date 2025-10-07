@@ -1,6 +1,8 @@
 package dev.affoysal.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import dev.affoysal.backend.domain.RequestContext;
+import dev.affoysal.backend.exception.ApiException;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -48,8 +50,8 @@ public abstract class Auditable {
 
     @PrePersist
     public void beforePersist() {
-        var userId = 0L;//RequestContext.getUserId();
-        //if(userId == null) { throw new ApiException("Cannot persist entity without user ID in Request Context for this thread"); }
+        var userId = RequestContext.getUserId();
+        if(userId == null) { throw new ApiException("Cannot persist entity without user ID in Request Context for this thread"); }
         setCreatedAt(now());
         setCreatedBy(userId);
         setUpdatedBy(userId);
@@ -58,8 +60,8 @@ public abstract class Auditable {
 
     @PreUpdate
     public void beforeUpdate() {
-        var userId = 0L ; //RequestContext.getUserId();
-        //if(userId == null) { throw new ApiException("Cannot update entity without user ID in Request Context for this thread"); }
+        var userId = RequestContext.getUserId();
+        if(userId == null) { throw new ApiException("Cannot update entity without user ID in Request Context for this thread"); }
         setUpdatedAt(now());
         setUpdatedBy(userId);
     }

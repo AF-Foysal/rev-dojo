@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import static dev.affoysal.backend.constant.Constants.PHOTO_DIRECTORY;
+import static dev.affoysal.backend.constant.Constants.FILE_STORAGE;
 import static dev.affoysal.backend.enumeration.TokenType.ACCESS;
 import static dev.affoysal.backend.enumeration.TokenType.REFRESH;
 import static dev.affoysal.backend.utils.RequestUtils.getResponse;
+import static java.net.URI.create;
 import static java.util.Collections.emptyMap;
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -45,7 +45,7 @@ public class UserResource {
     @PostMapping("/register")
     public ResponseEntity<Response> saveUser(@RequestBody @Valid UserRequest user, HttpServletRequest request) {
         userService.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
-        return ResponseEntity.created(getUri()).body(getResponse(request, emptyMap(), "Account created. Check your email to enable your account.", CREATED));
+        return ResponseEntity.created(create("")).body(getResponse(request, emptyMap(), "Account created. Check your email to enable your account.", CREATED));
     }
 
     @GetMapping("/verify/account")
@@ -171,7 +171,7 @@ public class UserResource {
 
     @GetMapping(value = "/image/{file_name}", produces = {IMAGE_PNG_VALUE, IMAGE_JPEG_VALUE})
     public byte[] getPhoto(@PathVariable("file_name") String fileName) throws IOException {
-        return Files.readAllBytes(Paths.get(PHOTO_DIRECTORY + fileName));
+        return Files.readAllBytes(Paths.get(FILE_STORAGE + fileName));
     }
 
     @PostMapping("/logout")
@@ -180,7 +180,4 @@ public class UserResource {
         return ResponseEntity.ok().body(getResponse(request, emptyMap(), "Logged out successfully", OK));
     }
 
-    private URI getUri() {
-        return URI.create("");
-    }
 }
