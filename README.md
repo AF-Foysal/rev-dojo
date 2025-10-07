@@ -36,20 +36,20 @@
 ## Document Management
 
 **Document List**
-- [ ] RD-501: The application should show a list of all the documents uploaded in the homepage.
-- [ ] RD-502: The application should show some details (name, size, owner, type, etc) about each document in the list.
-- [ ] RD-503: The application should allow logged in users to upload new documents.
-- [ ] RD-504: The application should have pagination for the document list.
-- [ ] RD-505: The application should allow to set how many documents to display per page.
-- [ ] RD-506: The application should allow to search documents by name (result should also include pagination).
-- [ ] RD-507: The application should allow to click on a document to see more details.
+- [x] RD-501: The application should show a list of all the documents uploaded in the homepage.
+- [x] RD-502: The application should show some details (name, size, owner, type, etc) about each document in the list.
+- [x] RD-503: The application should allow logged in users to upload new documents.
+- [x] RD-504: The application should have pagination for the document list.
+- [x] RD-505: The application should allow to set how many documents to display per page.
+- [x] RD-506: The application should allow to search documents by name (result should also include pagination).
+- [x] RD-507: The application should allow to click on a document to see more details.
 
 **Document Details**
 - [ ] RD-601: The application should show details of a document when clicked on.
-- [ ] RD-602: The document details should include document owner.
-- [ ] RD-603: The application should allow to update the name and description of a document (in detail page).
+- [x] RD-602: The document details should include document owner.
+- [x] RD-603: The application should allow to update the name and description of a document (in detail page).
 - [ ] RD-604: The application should allow to download a document (in detail page).
-- [ ] RD-605: The application should allow to delete the document (in detail page).
+- [ ] RD-605 (Optional) : The application should allow to delete the document (in detail page).
 
 ## Access Control
 **User Role**
@@ -63,10 +63,10 @@
 - [ ] RD-708: The application should only allow non-user role users to view other users in the system.
 
 ## Audit Trail
-- [ ] RD-801: The application should keep track of who created an entity (user, document, etc).
-- [ ] RD-802: The application should keep track of when an entity (user, document, etc) was created.
-- [ ] RD-803: The application should keep track of who updated an entity (user, document, etc).
-- [ ] RD-804: The application should keep track of when an entity (user, document, etc) was updated.
+- [x] RD-801: The application should keep track of who created an entity (user, document, etc).
+- [x] RD-802: The application should keep track of when an entity (user, document, etc) was created.
+- [x] RD-803: The application should keep track of who updated an entity (user, document, etc).
+- [x] RD-804: The application should keep track of when an entity (user, document, etc) was updated.
 
 
 ## Tech Stack
@@ -90,6 +90,6 @@
 
 - PostgreSQL
 
-### CI/RD
+### CI/CD
 
 - Docker
