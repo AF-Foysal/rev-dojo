@@ -56,7 +56,7 @@ public class UserResource {
     }
 
     @GetMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('user:read') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('user:read') or hasAnyRole('USER', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> profile(@AuthenticationPrincipal User userPrincipal, HttpServletRequest request) {
         var user = userService.getUserByUserId(userPrincipal.getUserId());
         return ResponseEntity.ok(getResponse(request, of("user", user), "Profile Retrieved", OK));
@@ -64,7 +64,7 @@ public class UserResource {
     }
 
     @PatchMapping("/update")
-    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('USER', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> updateProfile(@AuthenticationPrincipal User userPrincipal, @RequestBody UserRequest userRequest, HttpServletRequest request) {
         var user = userService.updateUser(userPrincipal.getUserId(), userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPhone(), userRequest.getBio());
         return ResponseEntity.ok(getResponse(request, of("user", user), "User updated successfully", OK));
