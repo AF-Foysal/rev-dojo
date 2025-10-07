@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +56,7 @@ public class UserResource {
     }
 
     @GetMapping("/profile")
+    @PreAuthorize("hasAnyAuthority('user:read') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> profile(@AuthenticationPrincipal User userPrincipal, HttpServletRequest request) {
         var user = userService.getUserByUserId(userPrincipal.getUserId());
         return ResponseEntity.ok(getResponse(request, of("user", user), "Profile Retrieved", OK));
@@ -62,6 +64,7 @@ public class UserResource {
     }
 
     @PatchMapping("/update")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> updateProfile(@AuthenticationPrincipal User userPrincipal, @RequestBody UserRequest userRequest, HttpServletRequest request) {
         var user = userService.updateUser(userPrincipal.getUserId(), userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPhone(), userRequest.getBio());
         return ResponseEntity.ok(getResponse(request, of("user", user), "User updated successfully", OK));
@@ -69,6 +72,7 @@ public class UserResource {
     }
 
     @PatchMapping("/updaterole")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> updateRole(@AuthenticationPrincipal User userPrincipal, @RequestBody RoleRequest roleRequest, HttpServletRequest request) {
         userService.updateRole(userPrincipal.getUserId(), roleRequest.getRole());
         return ResponseEntity.ok(getResponse(request, emptyMap(), "Role updated successfully", OK));
@@ -76,6 +80,7 @@ public class UserResource {
     }
 
     @PatchMapping("/toggleaccountexpired")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> toggleAccountExpired(@AuthenticationPrincipal User user, HttpServletRequest request) {
         userService.toggleAccountExpired(user.getUserId());
         return ResponseEntity.ok(getResponse(request, emptyMap(), "Account updated successfully", OK));
@@ -83,6 +88,7 @@ public class UserResource {
     }
 
     @PatchMapping("/toggleaccountlocked")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> toggleAccountLocked(@AuthenticationPrincipal User user, HttpServletRequest request) {
         userService.toggleAccountLocked(user.getUserId());
         return ResponseEntity.ok(getResponse(request, emptyMap(), "Account updated successfully", OK));
@@ -90,6 +96,7 @@ public class UserResource {
     }
 
     @PatchMapping("/toggleaccountenabled")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> toggleAccountEnabled(@AuthenticationPrincipal User user, HttpServletRequest request) {
         userService.toggleAccountEnabled(user.getUserId());
         return ResponseEntity.ok(getResponse(request, emptyMap(), "Account updated successfully", OK));
@@ -97,12 +104,14 @@ public class UserResource {
     }
 
     @PatchMapping("/mfa/setup")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> setUpMfa(@AuthenticationPrincipal User userPrincipal, HttpServletRequest request) {
         var user = userService.setUpMfa(userPrincipal.getId());
         return ResponseEntity.ok(getResponse(request, of("user", user), "MFA set up successfully", OK));
     }
 
     @PatchMapping("/mfa/cancel")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> cancelMfa(@AuthenticationPrincipal User userPrincipal, HttpServletRequest request) {
         var user = userService.cancelMfa(userPrincipal.getId());
         return ResponseEntity.ok(getResponse(request, of("user", user), "MFA canceled successfully", OK));
@@ -119,6 +128,7 @@ public class UserResource {
     // START - Update Password when user IS logged in
 
     @PatchMapping("/updatepassword")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> updatePassword(@AuthenticationPrincipal User user, @RequestBody UpdatePasswordRequest passwordRequest, HttpServletRequest request) {
         userService.updatePassword(user.getUserId(), passwordRequest.getPassword(), passwordRequest.getNewPassword(), passwordRequest.getConfirmNewPassword());
         return ResponseEntity.ok(getResponse(request, emptyMap(), "Password updated successfully", OK));
@@ -158,11 +168,13 @@ public class UserResource {
     // END - Reset Password when user is NOT logged in
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyAuthority('user:read') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> getUsers(@AuthenticationPrincipal User user, HttpServletRequest request){
         return ResponseEntity.ok(getResponse(request, of("users", userService.getUsers()), "Users Retrieved", OK));
     }
 
     @PatchMapping("/photo")
+    @PreAuthorize("hasAnyAuthority('user:update') or hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Response> uploadPhoto(@AuthenticationPrincipal User user, @RequestParam("file") MultipartFile file, HttpServletRequest request){
         var imageUrl = userService.uploadPhoto(user.getUserId(), file);
         return ResponseEntity.ok(getResponse(request, of("imageUrl", imageUrl), "Photo uploaded successfully", OK));
