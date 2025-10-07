@@ -1,0 +1,39 @@
+# --- Node ---
+node_modules/
+npm-debug.log*
+
+# --- Vite build output ---
+dist/
+dist-ssr/
+*.local
+
+# --- Environment files ---
+.env
+.env.*
+!.env.example
+
+# --- TypeScript ---
+*.tsbuildinfo
+
+# --- Editor directories and files ---
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- OS-generated files ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+logs/
+*.log
+lerna-debug.log*
+
+# --- Optional (uncomment if applicable) ---
+# .vercel/
+# .netlify/
+# coverage/
