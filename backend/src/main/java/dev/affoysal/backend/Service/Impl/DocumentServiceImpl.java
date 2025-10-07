@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -58,10 +59,10 @@ public class DocumentServiceImpl implements DocumentService {
         List<Document> newDocuments = new ArrayList<>();
         var userEntity = userRepository.findUserByUserId(userId).get();
         var storage = Paths.get(FILE_STORAGE).toAbsolutePath().normalize();
-        try{
-            for (MultipartFile document : documents){
+        try {
+            for (MultipartFile document : documents) {
                 var fileName = cleanPath(requireNonNull(document.getOriginalFilename()));
-                if ("..".contains(fileName)){
+                if ("..".contains(fileName)) {
                     throw new ApiException(String.format("Invalid file name: %s", fileName));
                 }
                 var documentEntity = DocumentEntity
@@ -89,7 +90,21 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public IDocument updateDocument(String documentId, String name, String description) {
-        return null;
+        try {
+            var documentEntity = getDocumentEntity(documentId);
+            var document = Paths.get(FILE_STORAGE).resolve(documentEntity.getName()).toAbsolutePath().normalize();
+            Files.move(document, document.resolveSibling(name), REPLACE_EXISTING);
+            documentEntity.setName(name);
+            documentEntity.setDescription(description);
+            documentRepository.save(documentEntity);
+            return getDocumentByDocumentId(documentId);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage());
+        }
+    }
+
+    private DocumentEntity getDocumentEntity(String documentId) {
+        return documentRepository.findByDocumentId(documentId).orElseThrow(() -> new ApiException("Unable to find document"));
     }
 
     @Override
@@ -99,11 +114,19 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public IDocument getDocumentByDocumentId(String documentId) {
-        return null;
+        return documentRepository.findDocumentByDocumentId(documentId).orElseThrow(() -> new ApiException("Document not found"));
     }
 
     @Override
     public Resource getResource(String documentName) {
-        return null;
+        try {
+            var filePath = Paths.get(FILE_STORAGE).toAbsolutePath().normalize().resolve(documentName);
+            if (!Files.exists(filePath)) {
+                throw new ApiException("File does not exist");
+            }
+            return new UrlResource(filePath.toUri());
+        } catch (Exception e) {
+            throw new ApiException("Unable to download document");
+        }
     }
 }
