@@ -1,6 +1,7 @@
 import React from "react";
 import { userAPI } from "../services/UserService";
 import { NavLink, useNavigate } from "react-router-dom";
+import logo from "../assets/react.svg";
 
 const NavBar = () => {
   const { data: user, error, isLoading, refetch } = userAPI.useFetchUserQuery();
@@ -36,8 +37,72 @@ const NavBar = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item"></li>
+              <li className="nav-item">
+                <NavLink
+                  to="/documents"
+                  end
+                  className="nav-link"
+                  aria-current="page"
+                >
+                  Documents
+                </NavLink>
+              </li>
+              {user?.data.user.role !== "USER" && (
+                <li className="nav-item">
+                  <NavLink to="/users" end className="nav-link">
+                    Users
+                  </NavLink>
+                </li>
+              )}
             </ul>
+            <div className="flex-shrink-0 dropdown">
+              <a
+                className="d-block link-body-emphasis text-decoration-none dropdown-toggle profile-dropdown"
+                style={{ cursor: "pointer" }}
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <img src="" alt="" />
+              </a>
+              <ul
+                className="dropdown-menu dropdown-menu-end"
+                style={{ paddingInline: "10px" }}
+              >
+                <li>
+                  <NavLink
+                    to="/user/profile"
+                    end
+                    className="rounded-2 dropdown-item d-flex gap-2 align-items-center"
+                  >
+                    <img src="" alt="" />
+                    <div className="">
+                      <p
+                        style={{
+                          display: "block",
+                          margin: 0,
+                          padding: 0,
+                          color: "#000 !important",
+                        }}
+                      >
+                        {user?.data.user.firstName}
+                      </p>
+                      <p
+                        style={{
+                          display: "block",
+                          margin: 0,
+                          padding: 0,
+                          fontSize: "12px",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {user?.data.user.email}
+                      </p>
+                    </div>
+                  </NavLink>
+                </li>
+                <hr className="dropdown-divider" />
+              </ul>
+            </div>
           </div>
         </div>
       </nav>
